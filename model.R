@@ -67,3 +67,5 @@ newdat %>%
              predict_log = "Pred Log Odds",
              predict_prob = "Pred Prob")
 
+sessionInfo()
+
