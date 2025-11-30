@@ -34,7 +34,7 @@ ggplot(chimp_data_reshape, aes(x = Week, y = Score, group = Monkey, colour = Tre
 chimp_data_reshape$total_correct <- (chimp_data_reshape$Score / 100)*20
 chimp_data_reshape$trials <- 20
 
-# run models 
+# run logistic regression models 
 
 model <- glm(cbind(total_correct, trials - total_correct) ~ Week * Treatment,
                 data = chimp_data_reshape,
@@ -44,11 +44,18 @@ model2 <- glm(cbind(total_correct, trials - total_correct) ~ is_ST * Treatment,
                data = chimp_data_reshape,
                family = binomial())
 
-
 summary(model2)
 BIC(model, model2)
 logLik(model)
 logLik(model2)
+
+# testing if mixed effect model helps
+
+mixed_model1 <- glmer(cbind(total_correct, trials - total_correct) ~ is_ST * Treatment + (1|Monkey),
+                      data = chimp_data_reshape,
+                      family = binomial())
+confint(mixed_model1, method = "boot")
+ranef(mixed_model1)
 
 # prediction
 
