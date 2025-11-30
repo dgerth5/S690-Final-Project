@@ -65,6 +65,8 @@ newdat <- expand.grid(is_ST = c(0, 1),
 newdat$predict_log <- predict(model2, newdat)
 newdat$predict_prob <- predict(model2, newdat, type = "response")
 
+newdat$is_ST <- ifelse(newdat$is_ST == 1, "Yes", "No")
+
 newdat %>%
   gt() %>%
   tab_header(title = md("**Table of Predictions**")) %>%
