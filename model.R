@@ -53,8 +53,10 @@ logLik(model2)
 mixed_model1 <- glmer(cbind(total_correct, trials - total_correct) ~ is_ST * Treatment + (1|Monkey),
                       data = chimp_data_reshape,
                       family = binomial())
-confint(mixed_model1, method = "boot")
+# extract ranef's: all 0 bc singular
 ranef(mixed_model1)
+# confidence intervals for parameters
+confint(mixed_model1, method = "boot")
 
 # prediction
 
