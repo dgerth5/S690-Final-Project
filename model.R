@@ -3,7 +3,6 @@ library(tidyverse)
 library(lme4)
 library(gt)
 
-
 # read and clean factors
 chimp_data <- read_csv("chimp-memory.csv")
 
