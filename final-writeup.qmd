@@ -1,0 +1,31 @@
+---
+title: "Effects of Surgery on Chimp Memory"
+author: "David Gerth"
+format: html
+editor: visual
+---
+
+## Executive Summary
+-  Goal: Estimate the effect of a particular surgery on chimp memory.  
+-  Methods: A binomial logistic regression model was fit with terms for time and if the chimp had the surgery or not, along with an interaction between the two.    
+-  Results: There was a significant difference in scores between chimps that had surgery and those that did not during short term, but not over the long term.  
+
+## Introduction
+
+## Study Design and Description of Dataset
+
+## Methodology
+
+In this model, an interaction term is used to estimate if the effect of treatment changes based on what time period the chimp is in.  
+
+
+The mixed effects model gives a singular fit, indicating that the random effect variance estimated is 0, and that the random effect for chimp is not needed. This is further confirmed by estimating parametric bootstrap confidence intervals for each parameter, and the confidence interval for the random effect variance includes 0. The parametric bootstrap is used here because the distribution of the random effect variance is skewed and fixed effect estimates depend on random effect estimates, which violates how a typical confidence interval is derived for typical linear/logistic model, hence why a bootstrap approach is used. (Extending the Linear Model, Faraway, pages 180-185)  
+
+## Results
+
+Treatment being insignificant on its own means that during the long-term time frame (Is_ST = 0), there is not a detectable difference between Treatment and Scores. Treatment is important due to the significant interaction between Time Frame and Treatment, but the effect of Treatment is different depending on time.  
+
+
+## Conclusion
+
+GitHub repo with full code: https://github.com/dgerth5/S690-Final-Project/tree/main
