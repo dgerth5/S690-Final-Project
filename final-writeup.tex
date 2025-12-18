@@ -1,0 +1,423 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+%
+\documentclass[
+  letterpaper,
+  DIV=11,
+  numbers=noendperiod]{scrartcl}
+
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else  
+    % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+% Make \paragraph and \subparagraph free-standing
+\makeatletter
+\ifx\paragraph\undefined\else
+  \let\oldparagraph\paragraph
+  \renewcommand{\paragraph}{
+    \@ifstar
+      \xxxParagraphStar
+      \xxxParagraphNoStar
+  }
+  \newcommand{\xxxParagraphStar}[1]{\oldparagraph*{#1}\mbox{}}
+  \newcommand{\xxxParagraphNoStar}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+  \let\oldsubparagraph\subparagraph
+  \renewcommand{\subparagraph}{
+    \@ifstar
+      \xxxSubParagraphStar
+      \xxxSubParagraphNoStar
+  }
+  \newcommand{\xxxSubParagraphStar}[1]{\oldsubparagraph*{#1}\mbox{}}
+  \newcommand{\xxxSubParagraphNoStar}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+\makeatother
+
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{241,243,245}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.40,0.45,0.13}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\BuiltInTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\ExtensionTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.28,0.35,0.67}{#1}}
+\newcommand{\ImportTok}[1]{\textcolor[rgb]{0.00,0.46,0.62}{#1}}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.07,0.07,0.07}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+
+\KOMAoption{captions}{tableheading}
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\AtBeginDocument{%
+\ifdefined\contentsname
+  \renewcommand*\contentsname{Table of contents}
+\else
+  \newcommand\contentsname{Table of contents}
+\fi
+\ifdefined\listfigurename
+  \renewcommand*\listfigurename{List of Figures}
+\else
+  \newcommand\listfigurename{List of Figures}
+\fi
+\ifdefined\listtablename
+  \renewcommand*\listtablename{List of Tables}
+\else
+  \newcommand\listtablename{List of Tables}
+\fi
+\ifdefined\figurename
+  \renewcommand*\figurename{Figure}
+\else
+  \newcommand\figurename{Figure}
+\fi
+\ifdefined\tablename
+  \renewcommand*\tablename{Table}
+\else
+  \newcommand\tablename{Table}
+\fi
+}
+\@ifpackageloaded{float}{}{\usepackage{float}}
+\floatstyle{ruled}
+\@ifundefined{c@chapter}{\newfloat{codelisting}{h}{lop}}{\newfloat{codelisting}{h}{lop}[chapter]}
+\floatname{codelisting}{Listing}
+\newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
+\makeatother
+\makeatletter
+\makeatother
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
+\makeatother
+
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\usepackage{bookmark}
+
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same} % disable monospaced font for URLs
+\hypersetup{
+  pdftitle={Effects of Surgery on Chimp Memory},
+  pdfauthor={David Gerth},
+  colorlinks=true,
+  linkcolor={blue},
+  filecolor={Maroon},
+  citecolor={Blue},
+  urlcolor={Blue},
+  pdfcreator={LaTeX via pandoc}}
+
+
+\title{Effects of Surgery on Chimp Memory}
+\author{David Gerth}
+\date{}
+
+\begin{document}
+\maketitle
+
+
+\subsection{Executive Summary}\label{executive-summary}
+
+\begin{itemize}
+\tightlist
+\item
+  Goal: Estimate the effect of a particular surgery on chimp memory.\\
+\item
+  Methods: A binomial logistic regression model was fit with terms for
+  time and if the chimp had the surgery or not, along with an
+  interaction between the two.\\
+\item
+  Results: There was a significant difference in scores between chimps
+  that had surgery and those that did in the 2-4 weeks after the surgery
+  date, but the difference in scores between groups diminishes over the
+  long run.
+\end{itemize}
+
+\subsection{Introduction}\label{introduction}
+
+The goal of the study is to determine if a particular surgery affects
+the memory of chimps who are taking a test. For each chimp, they are
+shown two objects and need to choose the object with the raisin
+underneath. Each chimp goes through this 20 times, and the percentage of
+correct choices is recorded. Each chimp is tested at the time interval
+two weeks after surgery date, four weeks, eight weeks, 12 weeks and 16
+weeks.
+
+For this analysis, we want to have a methodology that estimates if the
+surgery has an effect on chimp memory, and what is the magnitude
+(measured by difference in scores between the control and treated group)
+of the effect of surgery if there is one. Since this study is being
+conducted over time, we also want to know how time affects the
+significance and magnitude of surgery.
+
+\subsection{Description of Dataset}\label{description-of-dataset}
+
+The dataset consists of 18 chimps, each with their own name and ID.
+Seven of them were in the control group while the remaining 11 were in
+the ``treated'' group. As discussed in the introduction, each chimp is
+evaluated at the time period of 2, 4, 8, 12, and 16 weeks post surgery
+date, with the percentage of correct choices recorded. In the plot
+below, you can see how each chimp scored over time.
+
+\includegraphics{chimp-scores-over-time.png}
+
+The red line here indicates the split between short-term (2 and 4 weeks)
+and long term (8, 12, and 16 weeks). This will be discussed more in the
+Methodology section.
+
+There were no missing values in the dataset, so this was a
+straightforward dataset to analyze from a missing data perspective.
+
+\subsection{Methodology}\label{methodology}
+
+Many different model types were discussed, but the model ultimately
+selected was a binomial logistic regression, where the outcome variable
+was the number of correct choices out of 20.
+
+In this model, there are two variables: Is\_Short\_Term, which is 1 if
+Week is either 2 or 4, 0 otherwise, and Treatment, which is a factor
+with values ``treated'' and control.'' An interaction term is used to
+estimate if the effect of treatment changes based on what time period
+the chimp is in.
+
+Leaving treatment as a factor was straightforward, but the time
+component was tested in a few different ways. Treating week as a factor,
+treating week as numeric, and using a spline for time were all
+considered, but comparing models by BIC, the binomial logistic
+regression with a binary short term / long term variable and a variable
+for the chimp's treatment had the lowest BIC, and was easiest to
+interpret while directly answering the client's question.
+
+In mathematical terms, the model can be written as:
+
+\[
+\begin{aligned}
+\text{TotalCorrect}_i &\sim \text{Binomial}(n = 20,\, p_i) \\
+\text{logit}(p_i) &= \beta_0
++ \beta_1 \, \text{Is\_ST}_i
++ \beta_2 \, \text{Treatment}_i
++ \beta_3 \, (\text{Is\_ST}_i \times \text{Treatment}_i)
+\end{aligned}
+\]
+
+In R:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{model }\OtherTok{\textless{}{-}} \FunctionTok{glm}\NormalTok{(}\FunctionTok{cbind}\NormalTok{(total\_correct, trials }\SpecialCharTok{{-}}\NormalTok{ total\_correct) }\SpecialCharTok{\textasciitilde{}}\NormalTok{ is\_ST }\SpecialCharTok{*}\NormalTok{ Treatment,}
+               \AttributeTok{data =}\NormalTok{ chimp\_data\_reshape,}
+               \AttributeTok{family =} \FunctionTok{binomial}\NormalTok{())}
+\end{Highlighting}
+\end{Shaded}
+
+An extension of the model that was tested was adding a random effect for
+chimp name. It seemed natural to me that treatment effect would vary by
+chimp, or that there was innate differences in memory for each chimp.
+This was tested in with a few different formulations of random effects
+structures by the code below:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mixed\_model1 }\OtherTok{\textless{}{-}} \FunctionTok{glmer}\NormalTok{(}\FunctionTok{cbind}\NormalTok{(total\_correct, trials }\SpecialCharTok{{-}}\NormalTok{ total\_correct) }\SpecialCharTok{\textasciitilde{}}\NormalTok{ is\_ST }\SpecialCharTok{*}\NormalTok{ Treatment }\SpecialCharTok{+}\NormalTok{ (}\DecValTok{1}\SpecialCharTok{|}\NormalTok{Monkey),}
+                      \AttributeTok{data =}\NormalTok{ chimp\_data\_reshape,}
+                      \AttributeTok{family =} \FunctionTok{binomial}\NormalTok{())}
+\CommentTok{\# extract ranef\textquotesingle{}s: all 0 bc singular}
+\FunctionTok{ranef}\NormalTok{(mixed\_model1)}
+\CommentTok{\# confidence intervals for parameters}
+\FunctionTok{confint}\NormalTok{(mixed\_model1, }\AttributeTok{method =} \StringTok{"boot"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+The mixed effects model gives a singular fit, indicating that the random
+effect variance estimated is 0, and that the random effect for chimp is
+not needed. This is further confirmed by estimating parametric bootstrap
+confidence intervals for each parameter, and the confidence interval for
+the random effect variance includes 0. The parametric bootstrap is used
+here because the distribution of the random effect variance is skewed
+and fixed effect estimates depend on random effect estimates, which
+violates how a typical confidence interval is derived for typical
+linear/logistic model, hence why a bootstrap approach is used.
+(Extending the Linear Model, Faraway, pages 180-185)
+
+Overall, the final model is simple, but allows us to answer if the
+surgery has an effect on chimp memory, and to what degree.
+
+\subsection{Results}\label{results}
+
+Below is the table of coefficients for the binomial logistic regression.
+
+\textbf{Coefficients:}
+
+\begin{longtable}[]{@{}lll@{}}
+\toprule\noalign{}
+Coefficient & Value & p value \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Intercept & 0.73632 & 1.65e-12 \\
+Is\_Short\_Term & 0.67245 & 0.000239 \\
+Treatment & 0.03281 & 0.806127 \\
+Is\_Short\_Term:Treatment & -0.90156 & 5.80e-05 \\
+\end{longtable}
+
+From the table, we can see that the interaction between Is\_Short\_Term
+and Treatment has a significant p-value at the \(\alpha = 0.05\) level.
+Treatment being insignificant on its own means that during the long-term
+time frame (Is\_Short\_Term = 0), there is not a detectable difference
+between Treatment and Scores. Treatment is important due to the
+significant interaction between Time Frame and Treatment, but the effect
+of Treatment is different depending on time.
+
+While the coefficient outputs are important to see and provide important
+information, the interaction between time frame and treatment type is
+easier to understand when looking at the predicted outcomes for each
+interaction type, which are summarized in the tables below.
+
+\textbf{Predicted Probabilities:}
+
+\begin{longtable}[]{@{}llll@{}}
+\toprule\noalign{}
+Is\_ST & Control & Treated & Difference \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Yes & 80\% & 63\% & 17\% \\
+No & 68\% & 68\% & 0\% \\
+\end{longtable}
+
+\textbf{Predicted Log Odds:}
+
+\begin{longtable}[]{@{}lll@{}}
+\toprule\noalign{}
+Is\_ST & Control & Treated \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Yes & 1.409 & 0.540 \\
+No & 0.736 & 0.769 \\
+\end{longtable}
+
+From the table, you can see that for chimps in the control group, during
+the short time frame they are expected to choose the right object around
+80\% percent of the time. This figure decreases to 68\% during the long
+time frame, indicating that as time increases, their accuracy becomes
+worse. In comparison, chimps who were treated also average around 68\%
+accuracy in classifying objects over the long term, but during the short
+term, they are expected to choose the correct object around 63\% of the
+time, which is 17\% lower than for the control group. This is a large
+difference and shows that the difference between chimps who had surgery
+and those who didn't is substantial over the course of the first 2-4
+weeks post surgery.
+
+\subsection{Conclusion}\label{conclusion}
+
+In summary, we have built a model to predict how many times a chimp will
+chose the correct object with terms for if the chimp had surgery or not,
+and how long after the surgery the event took place. The model shows a
+statistically significant interaction between time frame after the
+surgery, and whether or not the chimp had the surgery or not. Over the
+long term (6+ weeks), the effect of surgery is minimal, but for the
+first 2-4 weeks, there is a large difference between scores of chimps
+who had surgery versus those who do not. With this model formulation, we
+were able to estimate if there was a statistically significant effect
+(there is), and also what the magnitude of the effect was (minimal
+during short time frame, \textasciitilde17\% difference between treated
+and control over long time frame). We also tested to see if there was
+any chimp-specific variation by using the mixed effects model, which
+there was not.
+
+GitHub repo with full code:
+https://github.com/dgerth5/S690-Final-Project/tree/main
+
+
+
+
+\end{document}

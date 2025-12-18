@@ -30,10 +30,48 @@ There were no missing values in the dataset, so this was a straightforward datas
 
 Many different model types were discussed, but the model ultimately selected was a binomial logistic regression, where the outcome variable was the number of correct choices out of 20.
 
-In this model, an interaction term is used to estimate if the effect of treatment changes based on what time period the chimp is in.  
+In this model, there are two variables: Is_Short_Term, which is 1 if Week is either 2 or 4, 0 otherwise, and Treatment, which is a factor with values "treated" and control." An interaction term is used to estimate if the effect of treatment changes based on what time period the chimp is in. 
+
+Leaving treatment as a factor was straightforward, but the time component was tested in a few different ways. Treating week as a factor, treating week as numeric, and using a spline for time were all considered, but comparing models by BIC, the binomial logistic regression with a binary short term / long term variable and a variable for the chimp's treatment had the lowest BIC, and was easiest to interpret while directly answering the client's question.  
+
+In mathematical terms, the model can be written as:
+
+$$
+\begin{aligned}
+\text{TotalCorrect}_i &\sim \text{Binomial}(n = 20,\, p_i) \\
+\text{logit}(p_i) &= \beta_0
++ \beta_1 \, \text{Is\_ST}_i
++ \beta_2 \, \text{Treatment}_i
++ \beta_3 \, (\text{Is\_ST}_i \times \text{Treatment}_i)
+\end{aligned}
+$$
+  
+In R:  
+
+```{r, eval=FALSE}
+model <- glm(cbind(total_correct, trials - total_correct) ~ is_ST * Treatment,
+               data = chimp_data_reshape,
+               family = binomial())
+```
+
+
+An extension of the model that was tested was adding a random effect for chimp name. It seemed natural to me that treatment effect would vary by chimp, or that there was innate differences in memory for each chimp. This was tested in with a few different formulations of random effects structures by the code below:
+
+```{r, eval=FALSE}
+mixed_model1 <- glmer(cbind(total_correct, trials - total_correct) ~ 
+                        is_ST * Treatment + (1|Monkey),
+                      data = chimp_data_reshape,
+                      family = binomial())
+# extract ranef's: all 0 bc singular
+ranef(mixed_model1)
+# confidence intervals for parameters
+confint(mixed_model1, method = "boot")
+```
 
 
 The mixed effects model gives a singular fit, indicating that the random effect variance estimated is 0, and that the random effect for chimp is not needed. This is further confirmed by estimating parametric bootstrap confidence intervals for each parameter, and the confidence interval for the random effect variance includes 0. The parametric bootstrap is used here because the distribution of the random effect variance is skewed and fixed effect estimates depend on random effect estimates, which violates how a typical confidence interval is derived for typical linear/logistic model, hence why a bootstrap approach is used. (Extending the Linear Model, Faraway, pages 180-185)  
+
+Overall, the final model is simple, but allows us to answer if the surgery has an effect on chimp memory, and to what degree.  
 
 ## Results
 
@@ -70,6 +108,6 @@ From the table, you can see that for chimps in the control group, during the sho
 
 ## Conclusion
 
-In summary, we have built a model to predict how many times a chimp will chose the correct object with terms for if the chimp had surgery or not, and how long after the surgery the event took place. The model shows a statistically significant interaction between time frame after the surgery, and whether or not the chimp had the surgery or not. Over the long term (6+ weeks), the effect of surgery is minimal, but for the first 2-4 weeks, there is a large difference between scores of chimps who had surgery versus those who do not. With this model formulation, we were able to estimate if there was a statistically significant effect (there is), and also what the magnitude of the effect was (minimal during short time frame, ~17% difference between treated and control over long time frame). We also tested to see if there was any chimp-specific variation by using the mixed effects model, which there was not.   
+In summary, we have built a model to predict how many times a chimp will chose the correct object with terms for if the chimp had surgery or not, and how long after the surgery the event took place. The model shows a statistically significant interaction between time frame after the surgery, and whether or not the chimp had the surgery or not. Over the long term (6+ weeks), the effect of surgery is minimal, but for the first 2-4 weeks, there is a large difference between scores of chimps who had surgery versus those who do not. With this model formulation, we were able to estimate if there was a statistically significant effect (there is), and also what the magnitude of the effect was (~17% difference between treated and control in the short term, minimal in long term). We also tested to see if there was any chimp-specific variation by using the mixed effects model, which there was not.  
 
 GitHub repo with full code: https://github.com/dgerth5/S690-Final-Project/tree/main

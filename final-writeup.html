@@ -21,6 +21,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -105,20 +139,55 @@ window.Quarto = {
 </li>
 <li>Methods: A binomial logistic regression model was fit with terms for time and if the chimp had the surgery or not, along with an interaction between the two.<br>
 </li>
-<li>Results: There was a significant difference in scores between chimps that had surgery and those that did not during short term, but not over the long term.</li>
+<li>Results: There was a significant difference in scores between chimps that had surgery and those that did in the 2-4 weeks after the surgery date, but the difference in scores between groups diminishes over the long run.</li>
 </ul>
 </section>
 <section id="introduction" class="level2">
 <h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>The goal of the study is to determine if a particular surgery affects the memory of chimps who are taking a test. For each chimp, they are shown two objects and need to choose the object with the raisin underneath. Each chimp goes through this 20 times, and the percentage of correct choices is recorded. Each chimp is tested at the time interval two weeks after surgery date, four weeks, eight weeks, 12 weeks and 16 weeks.</p>
+<p>For this analysis, we want to have a methodology that estimates if the surgery has an effect on chimp memory, and what is the magnitude (measured by difference in scores between the control and treated group) of the effect of surgery if there is one. Since this study is being conducted over time, we also want to know how time affects the significance and magnitude of surgery.</p>
 </section>
 <section id="description-of-dataset" class="level2">
 <h2 class="anchored" data-anchor-id="description-of-dataset">Description of Dataset</h2>
+<p>The dataset consists of 18 chimps, each with their own name and ID. Seven of them were in the control group while the remaining 11 were in the “treated” group. As discussed in the introduction, each chimp is evaluated at the time period of 2, 4, 8, 12, and 16 weeks post surgery date, with the percentage of correct choices recorded. In the plot below, you can see how each chimp scored over time.</p>
 <p><img src="chimp-scores-over-time.png" class="img-fluid"></p>
+<p>The red line here indicates the split between short-term (2 and 4 weeks) and long term (8, 12, and 16 weeks). This will be discussed more in the Methodology section.</p>
+<p>There were no missing values in the dataset, so this was a straightforward dataset to analyze from a missing data perspective.</p>
 </section>
 <section id="methodology" class="level2">
 <h2 class="anchored" data-anchor-id="methodology">Methodology</h2>
-<p>In this model, an interaction term is used to estimate if the effect of treatment changes based on what time period the chimp is in.</p>
+<p>Many different model types were discussed, but the model ultimately selected was a binomial logistic regression, where the outcome variable was the number of correct choices out of 20.</p>
+<p>In this model, there are two variables: Is_Short_Term, which is 1 if Week is either 2 or 4, 0 otherwise, and Treatment, which is a factor with values “treated” and control.” An interaction term is used to estimate if the effect of treatment changes based on what time period the chimp is in.</p>
+<p>Leaving treatment as a factor was straightforward, but the time component was tested in a few different ways. Treating week as a factor, treating week as numeric, and using a spline for time were all considered, but comparing models by BIC, the binomial logistic regression with a binary short term / long term variable and a variable for the chimp’s treatment had the lowest BIC, and was easiest to interpret while directly answering the client’s question.</p>
+<p>In mathematical terms, the model can be written as:</p>
+<p><span class="math display">\[
+\begin{aligned}
+\text{TotalCorrect}_i &amp;\sim \text{Binomial}(n = 20,\, p_i) \\
+\text{logit}(p_i) &amp;= \beta_0
++ \beta_1 \, \text{Is\_ST}_i
++ \beta_2 \, \text{Treatment}_i
++ \beta_3 \, (\text{Is\_ST}_i \times \text{Treatment}_i)
+\end{aligned}
+\]</span></p>
+<p>In R:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">glm</span>(<span class="fu">cbind</span>(total_correct, trials <span class="sc">-</span> total_correct) <span class="sc">~</span> is_ST <span class="sc">*</span> Treatment,</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">data =</span> chimp_data_reshape,</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">family =</span> <span class="fu">binomial</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>An extension of the model that was tested was adding a random effect for chimp name. It seemed natural to me that treatment effect would vary by chimp, or that there was innate differences in memory for each chimp. This was tested in with a few different formulations of random effects structures by the code below:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>mixed_model1 <span class="ot">&lt;-</span> <span class="fu">glmer</span>(<span class="fu">cbind</span>(total_correct, trials <span class="sc">-</span> total_correct) <span class="sc">~</span> </span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>                        is_ST <span class="sc">*</span> Treatment <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>Monkey),</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>                      <span class="at">data =</span> chimp_data_reshape,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>                      <span class="at">family =</span> <span class="fu">binomial</span>())</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># extract ranef's: all 0 bc singular</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ranef</span>(mixed_model1)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># confidence intervals for parameters</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="fu">confint</span>(mixed_model1, <span class="at">method =</span> <span class="st">"boot"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <p>The mixed effects model gives a singular fit, indicating that the random effect variance estimated is 0, and that the random effect for chimp is not needed. This is further confirmed by estimating parametric bootstrap confidence intervals for each parameter, and the confidence interval for the random effect variance includes 0. The parametric bootstrap is used here because the distribution of the random effect variance is skewed and fixed effect estimates depend on random effect estimates, which violates how a typical confidence interval is derived for typical linear/logistic model, hence why a bootstrap approach is used. (Extending the Linear Model, Faraway, pages 180-185)</p>
+<p>Overall, the final model is simple, but allows us to answer if the surgery has an effect on chimp memory, and to what degree.</p>
 </section>
 <section id="results" class="level2">
 <h2 class="anchored" data-anchor-id="results">Results</h2>
@@ -155,8 +224,8 @@ window.Quarto = {
 </tr>
 </tbody>
 </table>
-<p>From the table, we can see that the interaction between Is_Short_Term and Treatment has a significant p-value at the <span class="math inline">\(\alpha = 0.05\)</span> level. Treatment being insignificant on its own means that during the long-term time frame (Is_ST = 0), there is not a detectable difference between Treatment and Scores. Treatment is important due to the significant interaction between Time Frame and Treatment, but the effect of Treatment is different depending on time.</p>
-<p>While the coefficient outputs are important to see and provide a lot of information, the interaction between time frame and treatment type is easier to understand when looking at the predicted outcomes for each interaction type, which are summarized in the tables below.</p>
+<p>From the table, we can see that the interaction between Is_Short_Term and Treatment has a significant p-value at the <span class="math inline">\(\alpha = 0.05\)</span> level. Treatment being insignificant on its own means that during the long-term time frame (Is_Short_Term = 0), there is not a detectable difference between Treatment and Scores. Treatment is important due to the significant interaction between Time Frame and Treatment, but the effect of Treatment is different depending on time.</p>
+<p>While the coefficient outputs are important to see and provide important information, the interaction between time frame and treatment type is easier to understand when looking at the predicted outcomes for each interaction type, which are summarized in the tables below.</p>
 <p><strong>Predicted Probabilities:</strong></p>
 <table class="caption-top table">
 <thead>
@@ -169,16 +238,16 @@ window.Quarto = {
 </thead>
 <tbody>
 <tr class="odd">
-<td>No</td>
-<td>68%</td>
-<td>68%</td>
-<td>0%</td>
-</tr>
-<tr class="even">
 <td>Yes</td>
 <td>80%</td>
 <td>63%</td>
 <td>17%</td>
+</tr>
+<tr class="even">
+<td>No</td>
+<td>68%</td>
+<td>68%</td>
+<td>0%</td>
 </tr>
 </tbody>
 </table>
@@ -193,22 +262,22 @@ window.Quarto = {
 </thead>
 <tbody>
 <tr class="odd">
-<td>No</td>
-<td>0.736</td>
-<td>0.769</td>
-</tr>
-<tr class="even">
 <td>Yes</td>
 <td>1.409</td>
 <td>0.540</td>
 </tr>
+<tr class="even">
+<td>No</td>
+<td>0.736</td>
+<td>0.769</td>
+</tr>
 </tbody>
 </table>
-<p>From the table, you can see that for chimps in the control group, during the short time frame they are expected to choose the right object around 68% percent of the time. This figure jumps to 80% during the long time frame, indicating that their memory isn’t affected and they are learning as the continue to classify objects. In comparison, chimps who were treated also average around 68% accuracy in classifying objects, but that number drops to 63% during the long time frame, which is 17% lower than for the control group. This is a large difference and shows that the difference between chimps who had surgery and those who didn’t is substantial.</p>
+<p>From the table, you can see that for chimps in the control group, during the short time frame they are expected to choose the right object around 80% percent of the time. This figure decreases to 68% during the long time frame, indicating that as time increases, their accuracy becomes worse. In comparison, chimps who were treated also average around 68% accuracy in classifying objects over the long term, but during the short term, they are expected to choose the correct object around 63% of the time, which is 17% lower than for the control group. This is a large difference and shows that the difference between chimps who had surgery and those who didn’t is substantial over the course of the first 2-4 weeks post surgery.</p>
 </section>
 <section id="conclusion" class="level2">
 <h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
-<p>In summary, we have built a model to predict how many times a chimp will chose the correct object with terms for if the chimp had surgery or not, and how long after the surgery the event took place. The model shows a statistically significant interaction between time frame after the surgery, and whether or not the chimp had the surgery or not. Over the long term (6+ weeks), the effect of surgery is minimal, but for the first 2-4 weeks, there is a large difference between scores of chimps who had surgery versus those who do not. With this model formulation, we were able to estimate if there was a statistically significant effect (there is), and also what the magnitude of the effect was (minimal during short time frame, ~17% difference between treated and control over long time frame). We also tested to see if there was any chimp-specific variation by using the mixed effects model, which there was not.</p>
+<p>In summary, we have built a model to predict how many times a chimp will chose the correct object with terms for if the chimp had surgery or not, and how long after the surgery the event took place. The model shows a statistically significant interaction between time frame after the surgery, and whether or not the chimp had the surgery or not. Over the long term (6+ weeks), the effect of surgery is minimal, but for the first 2-4 weeks, there is a large difference between scores of chimps who had surgery versus those who do not. With this model formulation, we were able to estimate if there was a statistically significant effect (there is), and also what the magnitude of the effect was (~17% difference between treated and control in the short term, minimal in long term). We also tested to see if there was any chimp-specific variation by using the mixed effects model, which there was not.</p>
 <p>GitHub repo with full code: https://github.com/dgerth5/S690-Final-Project/tree/main</p>
 </section>
 
