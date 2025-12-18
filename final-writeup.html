@@ -35,6 +35,35 @@ ul.task-list li input[type="checkbox"] {
 <link href="final-writeup_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="final-writeup_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -82,17 +111,104 @@ ul.task-list li input[type="checkbox"] {
 <section id="introduction" class="level2">
 <h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
 </section>
-<section id="study-design-and-description-of-dataset" class="level2">
-<h2 class="anchored" data-anchor-id="study-design-and-description-of-dataset">Study Design and Description of Dataset</h2>
+<section id="description-of-dataset" class="level2">
+<h2 class="anchored" data-anchor-id="description-of-dataset">Description of Dataset</h2>
+<p><img src="chimp-scores-over-time.png" class="img-fluid"></p>
 </section>
 <section id="methodology" class="level2">
 <h2 class="anchored" data-anchor-id="methodology">Methodology</h2>
+<p>In this model, an interaction term is used to estimate if the effect of treatment changes based on what time period the chimp is in.</p>
+<p>The mixed effects model gives a singular fit, indicating that the random effect variance estimated is 0, and that the random effect for chimp is not needed. This is further confirmed by estimating parametric bootstrap confidence intervals for each parameter, and the confidence interval for the random effect variance includes 0. The parametric bootstrap is used here because the distribution of the random effect variance is skewed and fixed effect estimates depend on random effect estimates, which violates how a typical confidence interval is derived for typical linear/logistic model, hence why a bootstrap approach is used. (Extending the Linear Model, Faraway, pages 180-185)</p>
 </section>
 <section id="results" class="level2">
 <h2 class="anchored" data-anchor-id="results">Results</h2>
+<p>Below is the table of coefficients for the binomial logistic regression.</p>
+<p><strong>Coefficients:</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Coefficient</th>
+<th>Value</th>
+<th>p value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Intercept</td>
+<td>0.73632</td>
+<td>1.65e-12</td>
+</tr>
+<tr class="even">
+<td>Is_Short_Term</td>
+<td>0.67245</td>
+<td>0.000239</td>
+</tr>
+<tr class="odd">
+<td>Treatment</td>
+<td>0.03281</td>
+<td>0.806127</td>
+</tr>
+<tr class="even">
+<td>Is_Short_Term:Treatment</td>
+<td>-0.90156</td>
+<td>5.80e-05</td>
+</tr>
+</tbody>
+</table>
+<p>From the table, we can see that the interaction between Is_Short_Term and Treatment has a significant p-value at the <span class="math inline">\(\alpha = 0.05\)</span> level. Treatment being insignificant on its own means that during the long-term time frame (Is_ST = 0), there is not a detectable difference between Treatment and Scores. Treatment is important due to the significant interaction between Time Frame and Treatment, but the effect of Treatment is different depending on time.</p>
+<p>While the coefficient outputs are important to see and provide a lot of information, the interaction between time frame and treatment type is easier to understand when looking at the predicted outcomes for each interaction type, which are summarized in the tables below.</p>
+<p><strong>Predicted Probabilities:</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Is_ST</th>
+<th>Control</th>
+<th>Treated</th>
+<th>Difference</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>No</td>
+<td>68%</td>
+<td>68%</td>
+<td>0%</td>
+</tr>
+<tr class="even">
+<td>Yes</td>
+<td>80%</td>
+<td>63%</td>
+<td>17%</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Predicted Log Odds:</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Is_ST</th>
+<th>Control</th>
+<th>Treated</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>No</td>
+<td>0.736</td>
+<td>0.769</td>
+</tr>
+<tr class="even">
+<td>Yes</td>
+<td>1.409</td>
+<td>0.540</td>
+</tr>
+</tbody>
+</table>
+<p>From the table, you can see that for chimps in the control group, during the short time frame they are expected to choose the right object around 68% percent of the time. This figure jumps to 80% during the long time frame, indicating that their memory isn’t affected and they are learning as the continue to classify objects. In comparison, chimps who were treated also average around 68% accuracy in classifying objects, but that number drops to 63% during the long time frame, which is 17% lower than for the control group. This is a large difference and shows that the difference between chimps who had surgery and those who didn’t is substantial.</p>
 </section>
 <section id="conclusion" class="level2">
 <h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>In summary, we have built a model to predict how many times a chimp will chose the correct object with terms for if the chimp had surgery or not, and how long after the surgery the event took place. The model shows a statistically significant interaction between time frame after the surgery, and whether or not the chimp had the surgery or not. Over the long term (6+ weeks), the effect of surgery is minimal, but for the first 2-4 weeks, there is a large difference between scores of chimps who had surgery versus those who do not. With this model formulation, we were able to estimate if there was a statistically significant effect (there is), and also what the magnitude of the effect was (minimal during short time frame, ~17% difference between treated and control over long time frame). We also tested to see if there was any chimp-specific variation by using the mixed effects model, which there was not.</p>
 <p>GitHub repo with full code: https://github.com/dgerth5/S690-Final-Project/tree/main</p>
 </section>
 

@@ -25,8 +25,9 @@ ggplot(chimp_data_reshape, aes(x = Week, y = Score, group = Monkey, colour = Tre
              color = "darkred",
              linewidth = 1.3) +
   geom_text(aes(x = 2.5, y = 100, label = "Short vs Long Term"),
-            vjust = 25, color = "darkred") +
-  theme_minimal()
+            vjust = 25, color = "darkred") 
+
+ggsave("chimp-scores-over-time.png")
 
 # put into binomial format
 

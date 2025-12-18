@@ -1,4 +1,4 @@
-Run code with model.R script.  
+Run code with model.R script (install readr, tidyverse, lme4, gt if needed) 
 Read writeup with final-writeup.qmd script.  
 
 
